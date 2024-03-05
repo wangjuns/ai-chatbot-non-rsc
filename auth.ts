@@ -31,7 +31,7 @@ export const {
         // Add logic here to look up the user from the credentials supplied
         const user = { id: "1", name: "Jun", email: "wangjundot@gmail.com" }
 
-        if (credentials?.username == "wangjun" && credentials.password == "hello1234") {
+        if (credentials?.username == "wangjun" && credentials?.password == process.env.ADMIN_PWD!) {
           // Any object returned will be saved in `user` property of the JWT
           return user
         } else {
@@ -52,12 +52,15 @@ export const {
       return token
     },
     session: ({ session, token }) => {
-      if (session?.user && token?.id) {
-        session.user.id = String(token.id)
+      // console.log("session t", token)
+      // console.log("session s", session)
+      if (session?.user && token?.sub) {
+        session.user.id = String(token.sub)
       }
       return session
     },
     authorized({ auth }) {
+      // console.log("auth checked", auth)
       return !!auth?.user // this ensures there is a logged in user for -every- request
     }
   },
