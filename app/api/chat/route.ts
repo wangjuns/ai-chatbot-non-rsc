@@ -1,10 +1,9 @@
 import { kv } from '@vercel/kv'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
-import OpenAI from 'openai'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
-import { AzureKeyCredential, ChatCompletions, OpenAIClient } from '@azure/openai'
+import { AzureKeyCredential, OpenAIClient } from '@azure/openai'
 
 
 export const runtime = 'edge'
@@ -18,7 +17,7 @@ export async function POST(req: Request) {
   const json = await req.json()
   const { messages, previewToken } = json
   const session = await auth();
-  console.log(session)
+  // console.log(session)
 
   const userId = session?.user.id
 
@@ -39,6 +38,7 @@ export async function POST(req: Request) {
     messages,
   );
 
+  // @ts-expect-error type is ok
   const stream = OpenAIStream(response, {
     async onCompletion(completion) {
       const title = json.messages[0].content.substring(0, 100)
